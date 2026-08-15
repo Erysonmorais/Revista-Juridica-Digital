@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Revista Jurídica Interativa, material de estudo em formato de slides e quiz para Android e navegador.">
+    <meta name="theme-color" content="#080b14">
+    <meta name="background-color" content="#080b14">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Revista Jurídica">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="Logo Nosyre Tech.png" type="image/png">
+    <link rel="apple-touch-icon" href="Logo Nosyre Tech.png">
+    <title>Nosyre Tech - Revista Jurídica Interativa</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-dark: #080b14;
+            --bg-card: #121626;
+            --bg-hover: #1b2138;
+            --border-light: #252b44;
+            --text-main: #f0f4ff;
+            --text-muted: #8991b3;
+            --roxo-glow: #8b5cf6;
+            --azul-glow: #3b82f6;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            -webkit-tap-highlight-color: transparent;
+            background: var(--bg-dark);
+        }
+        
+        body {
+            position: relative;
+            background:
+                radial-gradient(circle at top, rgba(139, 92, 246, 0.18), transparent 30%),
+                linear-gradient(180deg, #060a12 0%, #0b0f1c 100%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('Logo Nosyre Tech.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 70%;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+            filter: saturate(1.1) brightness(1.05) contrast(1.05);
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 430px);
+            min-height: 100vh;
+            background: rgba(8, 11, 20, 0.92);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 32px 72px rgba(0,0,0,0.45);
+            overflow: hidden;
+        }
+
+        .sidebar, .main-content, .main-content > * { position: relative; z-index: 1; }
+
+        /* --- SIDEBAR (Glassmorphism) --- */
+        .sidebar {
+            width: 100%;
+            background: rgba(18, 22, 38, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: auto;
+            position: sticky;
+            top: 0;
+            padding: 18px 14px 12px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            overflow-y: visible;
+            z-index: 1000;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-wrapper img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #fff;
+            padding: 4px;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .logo-wrapper h1 {
+            font-size: 0.96rem;
+            font-weight: 700;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--roxo-glow), var(--azul-glow));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 12px;
+            color: var(--text-muted);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            min-height: 50px;
+        }
+
+        .nav-item:hover { background: var(--bg-hover); color: #fff; transform: translateX(2px); }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.05));
+            color: #fff;
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: inset 3px 0 0 var(--roxo-glow);
+        }
+
+        .aulas-panel {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .aulas-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-left: 4px;
+        }
+
+        .aulas-list {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .aula-btn {
+            width: 100%;
+            display: block;
+            text-align: center;
+            padding: 10px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.02);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-height: 48px;
+            box-sizing: border-box;
+        }
+
+        .aula-btn:hover:not(:disabled) {
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateX(3px);
+        }
+
+        .aula-btn.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(59, 130, 246, 0.08));
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.35);
+        }
+
+        .aula-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 18px 14px 42px;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            isolation: isolate;
+        }
+
+        .header-area {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-area h2 { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #fff, #94a3b8); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-area .badge { background: var(--bg-hover); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--border-light); }
+
+        /* --- SLIDE VIEWER --- */
+        .slide-container {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(21,25,38,0.95), rgba(11,15,26,0.95));
+            border-radius: 22px;
+            border: 1px solid var(--border-light);
+            padding: 14px;
+            margin-bottom: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+            display: none;
+        }
+        
+        .slide-container.active { display: block; animation: fadeSlide 0.5s ease-out; }
+
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .slide-img-wrapper {
+            background: #0a0d16;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .slide-img-wrapper:hover { box-shadow: 0 0 0 1px rgba(139,92,246,0.45), 0 12px 30px rgba(0,0,0,0.35); }
+
+        .slide-img-wrapper img {
+            width: 100%;
+            max-height: 58vh;
+            min-height: 320px;
+            object-fit: contain;
+            display: block;
+            transition: filter 0.25s ease;
+            cursor: zoom-in;
+            background: #060b13;
+        }
+
+        .slide-img-wrapper:hover img { filter: saturate(1.08); }
+
+        .slide-zoom-btn {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            z-index: 2;
+            background: rgba(15, 18, 28, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+        }
+
+        .slide-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 12px;
+            gap: 8px;
+        }
+
+        .btn-control {
+            background: var(--bg-hover);
+            color: #fff;
+            border: 1px solid var(--border-light);
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.8rem;
+            flex: 1;
+        }
+        .btn-control:hover:not(:disabled) { background: var(--roxo-glow); border-color: var(--roxo-glow); transform: scale(1.02); }
+        .btn-control:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* --- QUIZ WRAPPER --- */
+        .quiz-wrapper {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(18,22,38,0.96), rgba(11,15,26,0.96));
+            border-radius: 22px;
+            border: 1px solid var(--border-light);
+            padding: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; }
+        .quiz-header h3 { color: var(--roxo-glow); font-size: 1rem; }
+        .quiz-header span { color: var(--text-muted); font-size: 0.7rem; background: var(--bg-hover); padding: 4px 8px; border-radius: 12px; }
+
+        .q-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 14px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            border-left: 4px solid var(--azul-glow);
+            transition: all 0.2s;
+        }
+
+        .q-text { font-size: 0.96rem; margin-bottom: 12px; color: #fff; font-weight: 500; line-height: 1.5; }
+
+        .opts-wrapper { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        
+        .opt-btn {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 12px 14px;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        .opt-btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--azul-glow); color: #fff; transform: translateX(6px); }
+        .opt-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+
+        .opt-btn.correct { border-color: var(--success); background: rgba(34, 197, 94, 0.1); color: #86efac; box-shadow: 0 0 15px rgba(34, 197, 94, 0.1); }
+        .opt-btn.wrong { border-color: var(--error); background: rgba(239, 68, 68, 0.1); color: #fca5a5; box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); }
+
+        .fb-box {
+            margin-top: 15px;
+            padding: 18px;
+            border-radius: 10px;
+            display: none;
+            border: 1px solid transparent;
+        }
+        
+        .fb-box.active { display: block; }
+        .fb-box.correct-fb { border-color: var(--success); background: rgba(34, 197, 94, 0.05); }
+        .fb-box.wrong-fb { border-color: var(--error); background: rgba(239, 68, 68, 0.05); }
+
+        .fb-title { font-weight: 700; display: block; margin-bottom: 8px; font-size: 1.05rem; }
+        .fb-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+        
+        .btn-dica {
+            background: transparent;
+            border: 1px dashed var(--roxo-glow);
+            color: var(--roxo-glow);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 14px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .btn-dica:hover { background: rgba(139, 92, 246, 0.1); }
+        .dica-text { 
+            display: none; 
+            margin-top: 12px; 
+            padding: 12px; 
+            background: rgba(139, 92, 246, 0.08); 
+            border-radius: 8px; 
+            color: #d8b4fe; 
+            font-style: italic;
+            font-size: 0.95rem;
+            border-left: 3px solid var(--roxo-glow);
+            line-height: 1.4;
+        }
+        .dica-text.active { display: block; }
+
+        .install-button {
+            position: fixed;
+            right: max(16px, env(safe-area-inset-right));
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            z-index: 9999;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--roxo-glow), var(--azul-glow));
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 14px 18px;
+            box-shadow: 0 16px 32px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            display: none;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .install-button.visible {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        .install-button:hover {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 60px;
+            text-align: center;
+            color: #3b405a;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding-top: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        @media (min-width: 900px) {
+            body {
+                padding: 28px;
+                align-items: flex-start;
+            }
+
+            .app-shell {
+                width: min(100%, 1280px);
+                min-height: calc(100vh - 56px);
+                display: flex;
+                border-radius: 28px;
+                overflow: hidden;
+                border: 1px solid rgba(255,255,255,0.06);
+            }
+
+            .sidebar {
+                width: 300px;
+                min-height: 100%;
+                border-right: 1px solid var(--border-light);
+                border-bottom: none;
+                padding: 24px 18px 16px;
+            }
+
+            .main-content {
+                flex: 1;
+                padding: 28px 34px 40px;
+            }
+
+            .header-area {
+                margin-bottom: 24px;
+                padding-bottom: 18px;
+            }
+
+            .header-area h2 {
+                font-size: 1.85rem;
+            }
+
+            .slide-container {
+                padding: 18px;
+                margin-bottom: 28px;
+            }
+
+            .slide-img-wrapper img {
+                max-height: 70vh;
+                min-height: 420px;
+            }
+
+            .quiz-wrapper {
+                padding: 20px;
+            }
+
+            .q-box {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .app-shell {
+                width: 100%;
+                min-height: 100vh;
+                border-left: none;
+                border-right: none;
+            }
+
+            body {
+                background: linear-gradient(180deg, #080b14 0%, #0d1220 100%);
+            }
+
+            .sidebar { width: 100%; height: auto; position: sticky; backdrop-filter: none; padding: 15px 12px 10px; flex-direction: column; }
+            .logo-wrapper { width: 100%; margin-bottom: 10px; padding-bottom: 10px; }
+            .nav-title { display: none; }
+            .nav-item { justify-content: flex-start; font-size: 0.76rem; padding: 10px 10px; text-align: left; gap: 8px; }
+            .main-content { padding: 14px 12px 32px; }
+            .header-area { flex-direction: row; align-items: center; gap: 8px; }
+            .slide-controls { flex-wrap: nowrap; gap: 8px; justify-content: center; }
+            .install-button { bottom: calc(20px + env(safe-area-inset-bottom)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <button id="install-button" class="install-button" type="button">⬇ Instalar App</button>
+
+        <nav class="sidebar" id="sidebar">
+            <div class="logo-wrapper">
+                <img src="Logo Nosyre Tech.png" alt="Nosyre Tech" onerror="this.style.display='none'">
+                <h1>Revista Jurídica<br>Didital</h1>
+            </div>
+            <div class="nav-title">Acervo de Estudos</div>
+            
+            <div class="nav-item active" onclick="carregarMateria('DCO', 'Direito Civil - Obrigações', this)">
+                <span>⚖️</span> <span>Direito Civil Obrigações</span>
+            </div>
+            <div class="nav-item" onclick="carregarMateria('TGP', 'Teoria Geral do Processo', this)">
+                <span>⚖️</span> <span>Teoria Geral do Processo</span>
+            </div>
+            <div class="nav-item" onclick="carregarMateria('DCPG', 'Direito Civil - Parte Geral', this)">
+                <span>⚖️</span> <span>Direito Civil Parte Geral</span>
+            </div>
+
+            <div class="aulas-panel" id="aulas-panel"></div>
+        </nav>
+
+        <main class="main-content">
+            <div class="header-area">
+                <h2 id="titulo-materia">Direito Civil - Obrigações</h2>
+                <div class="badge" id="contador-slides">Slides: 0</div>
+            </div>
+
+            <div class="slide-container active" id="slide-viewer">
+                <div class="slide-img-wrapper" id="slide-zoom-area">
+                    <img id="slide-atual" src="" alt="Slide da matéria">
+                    <button class="slide-zoom-btn" type="button" onclick="abrirSlideAmpliado()">Ampliar</button>
+                </div>
+                
+                <div class="slide-controls">
+                    <button class="btn-control" id="btn-prev" onclick="navegarSlide(-1)">⬅ Anterior</button>
+                    <span style="color: var(--text-muted); font-weight: 500;" id="slide-counter">1 / 1</span>
+                    <button class="btn-control" id="btn-next" onclick="navegarSlide(1)">Próximo ➡</button>
+                </div>
+            </div>
+
+            <div class="quiz-wrapper">
+                <div class="quiz-header">
+                    <h3>📝 Quiz de Fixação</h3>
+                    <span id="qtd-perguntas">20 Perguntas</span>
+                </div>
+                <div id="container-quiz"></div>
+            </div>
+
+            <footer>
+                &copy; 2026 Nosyre Tech. Todos os direitos reservados. Plataforma Educacional Interativa.
+            </footer>
+        </main>
+    </div>
+
+<script>
+    // ============================================================
+    // 1. BANCO DE DADOS DAS MATÉRIAS E IMAGENS (FÁCIL DE EXPANDIR)
+    // ============================================================
+    const materias = {
+        'DCO': {
+            titulo: 'Direito das Obrigações',
+            imagens: [
+                '1-Direito Civil - Obrigações/DCO/1_Direito-das-Obrigacoes-Fundamentos-Estrutura-e-Execucao.png',
+                '1-Direito Civil - Obrigações/DCO/2_Editorial.png',
+                '1-Direito Civil - Obrigações/DCO/3_Capitulo-I.png',
+                '1-Direito Civil - Obrigações/DCO/4_Capitulo-II.png',
+                '1-Direito Civil - Obrigações/DCO/5_Capitulo-III.png',
+                '1-Direito Civil - Obrigações/DCO/6_Capitulo-IV.png',
+                '1-Direito Civil - Obrigações/DCO/7_Capitulo-V.png',
+                '1-Direito Civil - Obrigações/DCO/8_Capitulo-VI.png',
+                '1-Direito Civil - Obrigações/DCO/9_Capitulo-VII.png',
+                '1-Direito Civil - Obrigações/DCO/10_Capitulo-IX-Mapa-Mental.png',
+                '1-Direito Civil - Obrigações/DCO/11_Capitulo-X-Caso-Pratico-e-Conclusao.png'
+            ]
+        },
+        'TGP': {
+            titulo: 'Teoria Geral do Processo',
+            imagens: [
+                '2-Teoria Geral Do Processo/TGP/1_TEORIA-GERAL-DO-PROCESSO.png',
+                '2-Teoria Geral Do Processo/TGP/2_Editorial-O-Processo-como-Instrumento-de-Justica.png',
+                '2-Teoria Geral Do Processo/TGP/3_I-Conceitos-Fundamentais-Processo-Jurisdicao-e-Competencia.png',
+                '2-Teoria Geral Do Processo/TGP/4_II-Conflito-de-Interesse-e-Lide-A-Definicao-de-Carnelutti.png',
+                '2-Teoria Geral Do Processo/TGP/5_III-Principios-Constitucionais-Processuais-Parte-I.png',
+                '2-Teoria Geral Do Processo/TGP/6_IV-Principios-Constitucionais-Processuais-Parte-II.png',
+                '2-Teoria Geral Do Processo/TGP/7_V-Justica-versus-Legalidade-e-Evolucao-Historica.png',
+                '2-Teoria Geral Do Processo/TGP/8_VI-Estrutura-da-Disciplina-e-Diferencas-Processuais.png',
+                '2-Teoria Geral Do Processo/TGP/9_VII-Institutos-Processuais-Fundamentais.png',
+                '2-Teoria Geral Do Processo/TGP/10_VIII-Mapa-Mental-Caso-Pratico-e-Conclusao.png'
+            ]
+        },
+        'DCPG': {
+            titulo: 'Direito Civil - Parte Geral',
+            imagens: [
+                '3-Direito Civil - Parte Geral/DCPG/1_LINDB-e-Fundamentos-da-Pessoa-Natural.png',
+                '3-Direito Civil - Parte Geral/DCPG/2_Editorial-Contextualizacao-do-Problema-Juridico.png',
+                '3-Direito Civil - Parte Geral/DCPG/3_Natureza-Juridica-e-Funcoes-Sistematicas-da-LINDB.png',
+                '3-Direito Civil - Parte Geral/DCPG/4_Vigencia-Eficacia-e-Revogacao-de-Normas.png',
+                '3-Direito Civil - Parte Geral/DCPG/5_Hermeneutica-Integracao-de-Lacunas-e-Seguranca-Juridica.png',
+                '3-Direito Civil - Parte Geral/DCPG/6_Conflito-de-Leis-no-Espaco-e-Direitos-da-Personalidade.png',
+                '3-Direito Civil - Parte Geral/DCPG/7_Direitos-da-Personalidade-Conceito-e-Natureza-Juridica.png',
+                '3-Direito Civil - Parte Geral/DCPG/8_Seguranca-Juridica-e-Estabilidade-do-Ordenamento.png',
+                '3-Direito Civil - Parte Geral/DCPG/9_Mapa-Mental-Estrutura-Sistematica-da-LINDB.png',
+                '3-Direito Civil - Parte Geral/DCPG/10_Estudo-de-Caso-Lei-Municipal-Parque-dos-Ypes.png'
+            ]
+        }
+    };
+
+    // ============================================================
+    // 2. BANCO DE QUESTÕES EXCLUSIVAS PARA CADA MATÉRIA (20 CADA)
+    // ============================================================
+    const bancoQuestoes = {
+        'DCO': [
+            // Slide 2
+            {
+                pergunta: "O que caracteriza uma obrigação civil em relação a um simples desejo ou uma expectativa moral?",
+                opcoes: ["A) A obrigação civil é um vínculo jurídico exigível.", "B) A obrigação civil depende apenas da vontade do credor.", "C) A obrigação civil não pode ser cumprida.", "D) A obrigação civil é sempre informal."],
+                correta: 0,
+                expl_certa: "Uma obrigação civil é um vínculo jurídico exigível, com relação específica entre credor e devedor, e não apenas um desejo moral ou uma expectativa sem força jurídica.",
+                expl_errada: "O vínculo jurídico exigível é o núcleo da obrigação civil. Sem esse caráter, não há obrigação no sentido jurídico.",
+                dica: "Dica: pense no vínculo entre credor e devedor e na exigibilidade do direito."
+            },
+            {
+                pergunta: "Qual alternativa melhor define o papel do credor na relação obrigacional?",
+                opcoes: ["A) É quem deve cumprir a prestação.", "B) É quem pode exigir o cumprimento da prestação.", "C) É quem apenas assina o contrato.", "D) É quem decide a lei aplicável."],
+                correta: 1,
+                expl_certa: "O credor é o sujeito ativo da relação obrigacional, isto é, aquele que pode exigir o cumprimento da prestação do devedor.",
+                expl_errada: "Você misturou os papéis. Quem cumpre é o devedor; quem exige o cumprimento é o credor.",
+                dica: "Dica: lembre-se de 'ativo' e 'passivo' na obrigação."
+            },
+            // Slide 3
+            {
+                pergunta: "Qual dos elementos abaixo faz parte da estrutura da obrigação?",
+                opcoes: ["A) Vínculo pessoal entre credor e devedor.", "B) Apenas a vontade de uma parte.", "C) Exclusivamente a assinatura do contrato.", "D) O valor moral da dívida."],
+                correta: 2,
+                expl_certa: "A obrigação exige um vínculo pessoal entre as partes, ligando credor e devedor em uma relação jurídica de prestação.",
+                expl_errada: "A obrigação não nasce apenas da assinatura; ela exige vínculo jurídico e exigibilidade da prestação.",
+                dica: "Dica: o elemento central é o vínculo entre as pessoas, não apenas um documento."
+            },
+            {
+                pergunta: "A prestação na obrigação deve ser:",
+                opcoes: ["A) Apenas moral.", "B) Possível, lícita e determinada ou determinável.", "C) Inexistente antes do processo.", "D) Sem relação com o patrimônio."],
+                correta: 3,
+                expl_certa: "A prestação deve ser possível, lícita e determinada ou determinável para que a obrigação seja válida e exigível.",
+                expl_errada: "A obrigação não pode ser impossível ou ilícita; seu conteúdo precisa ter uma prestação juridicamente viável.",
+                dica: "Dica: pense na validade da prestação: possível, lícita e certa."
+            },
+            // Slide 4
+            {
+                pergunta: "Uma obrigação de dar envolve:",
+                opcoes: ["A) A execução de um serviço pessoal.", "B) A entrega de uma coisa ou a transferência de valor.", "C) A recusa de uma conduta.", "D) Apenas um pedido de desculpas."],
+                correta: 0,
+                expl_certa: "Obrigações de dar consistem em entregar coisa ou transferir valor, como o pagamento de dinheiro ou a entrega de um bem.",
+                expl_errada: "Serviço pessoal é característica de obrigação de fazer; entregar coisa ou valores é obrigação de dar.",
+                dica: "Dica: pagar aluguel, entregar um veículo ou uma coisa é obrigação de dar."
+            },
+            {
+                pergunta: "Qual modalidade corresponde a uma obrigação de não fazer?",
+                opcoes: ["A) Não praticar determinada conduta.", "B) Entregar um bem.", "C) Realizar um serviço.", "D) Fazer um pagamento em espécie."],
+                correta: 1,
+                expl_certa: "Obrigação de não fazer é a abstenção de uma conduta, como não vender um bem em concorrência ou não praticar certo ato.",
+                expl_errada: "Não fazer é o oposto de executar uma ação ou entregar um bem; é uma omissão de conduta.",
+                dica: "Dica: pense em uma obrigação de abstenção, não de entrega ou execução."
+            },
+            // Slide 5
+            {
+                pergunta: "O que significa a transitoriedade da obrigação?",
+                opcoes: ["A) A obrigação é eterna.", "B) A obrigação tem começo e fim, sendo extinta pelo cumprimento.", "C) A obrigação não pode ser cumprida.", "D) A obrigação depende do juiz para existir."],
+                correta: 2,
+                expl_certa: "A transitoriedade significa que a obrigação nasce para ter um cumprimento e, em regra, se extingue por sua satisfação ou por outros modos de extinção.",
+                expl_errada: "Obrigações não são eternas; elas são criadas para serem cumpridas e extintas.",
+                dica: "Dica: o cumprimento ou a extinção da dívida é o ponto-chave."
+            },
+            {
+                pergunta: "Qual seria um exemplo claro de extinção da obrigação?",
+                opcoes: ["A) O pagamento da dívida.", "B) A elaboração de um contrato sem valor.", "C) A ausência de prova.", "D) O não uso da lei."],
+                correta: 3,
+                expl_certa: "O pagamento é um dos modos clássicos de extinção da obrigação, quando o devedor cumpre a prestação devida.",
+                expl_errada: "A dívida não desaparece pela ausência de prova; o pagamento ou outro mecanismo de extinção é que a resolve.",
+                dica: "Dica: pense no vencimento da obrigação e no cumprimento."
+            },
+            // Slide 6
+            {
+                pergunta: "O que garante ao credor a executoriedade da obrigação?",
+                opcoes: ["A) A possibilidade de exigir judicialmente o cumprimento.", "B) A escolha exclusiva do devedor.", "C) O direito de ignorar a lei.", "D) A perda automática do direito."],
+                correta: 0,
+                expl_certa: "Executoriedade significa que, se o devedor não cumpre, o credor pode buscar a tutela jurisdicional e o cumprimento forçado.",
+                expl_errada: "A obrigação não depende apenas da vontade do devedor; o credor pode exigir a tutela do Estado.",
+                dica: "Dica: pense na possibilidade de execução do direito em caso de inadimplemento."
+            },
+            {
+                pergunta: "Em caso de inadimplemento, o credor normalmente busca:",
+                opcoes: ["A) Reforçar apenas a vontade do devedor.", "B) Pedir tutela jurisdicional para satisfazer o direito.", "C) Abandonar a obrigação.", "D) Criar uma nova relação sem causa."],
+                correta: 1,
+                expl_certa: "Quando há inadimplemento, o credor pode acionar o Judiciário para fazer valer a obrigação por meio de execução ou outra medida adequada.",
+                expl_errada: "A obrigação exige proteção jurídica, não apenas uma expectativa de boa vontade do devedor.",
+                dica: "Dica: o Estado atua para garantir o cumprimento do direito."
+            },
+            // Slide 7
+            {
+                pergunta: "O que é a execução da obrigação?",
+                opcoes: ["A) A sua transformação em direito penal.", "B) O mecanismo de compelir o devedor a cumprir a prestação.", "C) A impossibilidade de cobrança.", "D) A renúncia do credor."],
+                correta: 2,
+                expl_certa: "Execução é o conjunto de medidas que permitem ao credor compelir o devedor ao cumprimento da prestação devida.",
+                expl_errada: "Execução não é a negação do direito; é a forma de satisfazê-lo quando o devedor não cumpre.",
+                dica: "Dica: execução = compelir o cumprimento."
+            },
+            {
+                pergunta: "No processo de execução, a penhora é utilizada para:",
+                opcoes: ["A) Garantir a satisfação do crédito sobre bens do devedor.", "B) Cancelar a dívida automaticamente.", "C) Eliminar a prova documental.", "D) Criar nova obrigação sem base legal."],
+                correta: 3,
+                expl_certa: "A penhora é a constrição sobre bens do devedor para garantir a satisfação do crédito do credor.",
+                expl_errada: "A penhora não elimina a dívida por si só; ela serve para garantir a execução e a satisfação do crédito.",
+                dica: "Dica: pense em bens a serem usados para quitar a dívida."
+            },
+            // Slide 8
+            {
+                pergunta: "Os Juizados Especiais foram criados para:",
+                opcoes: ["A) Resolver conflitos de forma mais simples e acessível.", "B) Eliminar qualquer tipo de processo.", "C) Reduzir o papel do juiz.", "D) Substituir o Código Civil."],
+                correta: 0,
+                expl_certa: "Os Juizados Especiais têm por objetivo aproximar o cidadão do Judiciário, com procedimentos mais simplificados para causas de menor complexidade.",
+                expl_errada: "Eles não eliminam o processo nem substituem a legislação geral; ao contrário, são mecanismos de acesso à justiça mais ágil.",
+                dica: "Dica: é um caminho mais simples e menos burocrático para certas causas."
+            },
+            {
+                pergunta: "Qual é uma característica do Juizado Especial?",
+                opcoes: ["A) Exige defesa técnica em todas as fases.", "B) Há maior simplicidade na condução da causa.", "C) Só é usado para casos criminais.", "D) Não admite citação."],
+                correta: 1,
+                expl_certa: "O Juizado Especial se destaca pela simplicidade e pela maior acessibilidade na condução de causas de menor complexidade.",
+                expl_errada: "A maior característica não é complexidade, e sim a simplificação do procedimento e acesso facilitado.",
+                dica: "Dica: o procedimento é mais acessível e menos formal."
+            },
+            // Slide 9
+            {
+                pergunta: "Qual é o ramo do Direito que costuma regular as relações empresariais e os títulos de crédito?",
+                opcoes: ["A) Direito Empresarial.", "B) Direito da Família.", "C) Direito Penal.", "D) Direito do Trabalho."],
+                correta: 2,
+                expl_certa: "O Direito Empresarial regula as relações comerciais e os títulos de crédito, como cheques, notas promissórias e duplicatas.",
+                expl_errada: "Essas relações não se enquadram principalmente no Direito da Família ou no Trabalhista; são típicas do ambiente empresarial.",
+                dica: "Dica: títulos de crédito e obrigações comerciais se ligam ao Direito Empresarial."
+            },
+            {
+                pergunta: "As obrigações alimentares se distinguem das obrigações patrimoniais comuns porque:",
+                opcoes: ["A) Têm base na solidariedade familiar e na necessidade de subsistência.", "B) Nuncam podem ser executadas.", "C) São sempre de caráter criminal.", "D) Não têm relação com a pessoa."],
+                correta: 3,
+                expl_certa: "Alimentos têm natureza de necessidade material e apoio à subsistência, com base em relações familiares e deveres de proteção.",
+                expl_errada: "Alimentos não são apenas patrimoniais; têm conteúdo pessoal e social importante na família.",
+                dica: "Dica: pense em sustento e dependência familiar."
+            },
+            // Slide 10
+            {
+                pergunta: "Qual é o centro do mapa mental do Direito das Obrigações?",
+                opcoes: ["A) O vínculo jurídico entre credor e devedor.", "B) A sentença.", "C) O juiz do processo.", "D) A vontade unilateral do credor."],
+                correta: 0,
+                expl_certa: "O mapa mental mostra que o centro é o vínculo jurídico entre credor e devedor, a partir do qual se ramificam as obrigações, fontes, modalidades e execução.",
+                expl_errada: "O centro da disciplina não é a sentença, mas a relação obrigacional e suas diversas ramificações.",
+                dica: "Dica: o mapa mental parte do vínculo jurídico principal."
+            },
+            {
+                pergunta: "Como a função social do contrato se relaciona com a autonomia das partes?",
+                opcoes: ["A) Ela elimina toda autonomia.", "B) Ela limita a autonomia, exigindo respeito à ordem jurídica e ao bem comum.", "C) Ela apenas rege o processo civil.", "D) Ela só vale para obrigações de dar."],
+                correta: 1,
+                expl_certa: "A função social do contrato limita a autonomia privada para que o negócio respeite a lei, a ordem pública e os fins sociais do contrato.",
+                expl_errada: "Autonomia não é absoluta; ela é limitada por valores e regras da ordem jurídica.",
+                dica: "Dica: autonomia privada é importante, mas não é ilimitada."
+            },
+            // Slide 11
+            {
+                pergunta: "Em um caso prático, a conclusão do estudo de obrigações costuma apontar para:",
+                opcoes: ["A) A necessidade de identificar a relação jurídica, a prestação e o remédio adequado.", "B) A eliminação da responsabilidade civil.", "C) A substituição de todas as regras por acordos pessoais.", "D) A exclusão do Judiciário."],
+                correta: 2,
+                expl_certa: "Os estudos de caso costumam concluir que o ponto central é identificar a relação obrigacional, a prestação e os meios de satisfazer o direito.",
+                expl_errada: "A responsabilidade e a tutela jurídica não desaparecem; o direito exige identificação e solução do problema.",
+                dica: "Dica: o caso prático sempre volta para a relação jurídica e a prestação devida."
+            },
+            {
+                pergunta: "Qual é a importância do estudo de casos práticos em Direito das Obrigações?",
+                opcoes: ["A) Só serve para memorizar fórmulas.", "B) Ajuda a aplicar os conceitos à realidade e compreender a exigibilidade do direito.", "C) Não tem relação com a matéria.", "D) Substitui a teoria do direito."],
+                correta: 3,
+                expl_certa: "Os casos práticos são fundamentais para aplicar a teoria às situações reais, mostrando como a obrigação funciona na prática e como os direitos são exigidos.",
+                expl_errada: "A teoria e os casos se complementam; o estudo prático ajuda a compreender o conteúdo e a exigibilidade do direito.",
+                dica: "Dica: teoria sem aplicação fica incompleta; o caso mostra como o direito atua em realidade."
+            }
+        ],
+
+        'TGP': [
+            // Slide 2
+            {
+                pergunta: "O que o slide 2 destaca como base da Teoria Geral do Processo?",
+                opcoes: ["A) A ideia de Estado como terceiro e a norma processual.", "B) O valor da pena criminal.", "C) Apenas a competência administrativa.", "D) A natureza da propriedade."],
+                correta: 0,
+                expl_certa: "O slide 2 introduz o processo como instrumento de solução de controvérsias perante o Estado, com a ideia de jurisdição e de disciplina processual.",
+                expl_errada: "A base do processo não está na pena criminal ou na propriedade; está na resolução de conflitos com a atuação do Estado.",
+                dica: "Dica: pense no processo como mecanismo de solução do conflito."
+            },
+            {
+                pergunta: "Qual é o papel central do processo na Teoria Geral do Processo?",
+                opcoes: ["A) Garantir a justa solução da controvérsia jurídica.", "B) Alterar o direito material sem regra.", "C) Substituir a constituição.", "D) Eliminar a necessidade de provas."],
+                correta: 1,
+                expl_certa: "O processo serve para a correta aplicação do direito material e para a solução do conflito pela via do Estado-Juiz.",
+                expl_errada: "O processo não dispensa provas nem substitui a Constituição; ele organiza a garantia de acesso à justiça.",
+                dica: "Dica: processo = instrumento de efetivação do direito e da tutela jurisdicional."
+            },
+            // Slide 3
+            {
+                pergunta: "O conceito de lide exige a presença de:",
+                opcoes: ["A) Pretensão e resistência.", "B) Apenas uma parte ativa.", "C) Uma norma administrativa.", "D) O silêncio do juiz."],
+                correta: 2,
+                expl_certa: "Lide é a relação de conflito entre pretensão de uma parte e resistência da outra, que dá origem ao processo.",
+                expl_errada: "Sem pretensão e resistência, não há lide. Ela não nasce apenas da vontade de um lado.",
+                dica: "Dica: lide = pretensão resistida."
+            },
+            {
+                pergunta: "Segundo Carnelutti, a lide é:",
+                opcoes: ["A) O processo em si.", "B) O conflito de interesses qualificado pela pretensão resistida.", "C) Um acordo entre as partes.", "D) Uma fase da execução."],
+                correta: 3,
+                expl_certa: "Carnelutti define lide como conflito de interesses qualificado pela pretensão resistida, isto é, o núcleo do litígio.",
+                expl_errada: "A lide não é o processo e nem o acordo; ela é o conflito que leva ao processo.",
+                dica: "Dica: pense em conflito de interesses com resistência."
+            },
+            // Slide 4
+            {
+                pergunta: "Qual das alternativas melhor explica o princípio do contraditório?",
+                opcoes: ["A) Só o juiz pode falar.", "B) As partes devem ter oportunidade de se manifestar e responder.", "C) O processo não precisa ser público.", "D) Não há necessidade de fundamentação."],
+                correta: 0,
+                expl_certa: "O contraditório garante que as partes tenham oportunidade de conhecer e responder aos argumentos e provas da outra parte.",
+                expl_errada: "O contraditório não exclui a participação das partes, e sim assegura o debate das alegações.",
+                dica: "Dica: a outra parte também deve ser ouvida."
+            },
+            {
+                pergunta: "Qual princípio processual assegura a participação efetiva das partes no processo?",
+                opcoes: ["A) Princípio do contraditório.", "B) Princípio da prescrição.", "C) Princípio da reserva do possível.", "D) Princípio da improbidade."],
+                correta: 1,
+                expl_certa: "O contraditório é o princípio que assegura que as partes tenham pleno conhecimento e oportunidade de se manifestar.",
+                expl_errada: "Prescrição e improbidade não são princípios estruturantes do processo em seu debate entre as partes.",
+                dica: "Dica: a parte não pode ser surpreendida sem poder se defender."
+            },
+            // Slide 5
+            {
+                pergunta: "Qual princípio constitucional garante que ninguém seja privado de um direito sem um processo regular?",
+                opcoes: ["A) Due process of law.", "B) Princípio da publicidade.", "C) Princípio da eficiência.", "D) Princípio do livre acesso."],
+                correta: 2,
+                expl_certa: "O due process of law, ou devido processo legal, exige processo regular e justo para restrição de direitos ou bens.",
+                expl_errada: "A publicidade e a eficiência não substituem a exigência de um processo regular e justo.",
+                dica: "Dica: pense no 'devido processo legal' e na exigência de justiça procedural."
+            },
+            {
+                pergunta: "O que o devido processo legal protege?",
+                opcoes: ["A) O direito de agir e de se defender.", "B) A vontade unilateral do juiz.", "C) O silêncio de uma parte.", "D) A perda automática de bens."],
+                correta: 3,
+                expl_certa: "O devido processo legal protege a possibilidade de as partes serem ouvidas, de haver regras processuais e de não haver decisão arbitrária.",
+                expl_errada: "A proteção não é a arbitrariedade do juiz nem a perda automática de direitos; é o respeito ao procedimento justo.",
+                dica: "Dica: é a garantia de justiça processual, e não arbitrariedade."
+            },
+            // Slide 6
+            {
+                pergunta: "O que significa a inafastabilidade da jurisdição?",
+                opcoes: ["A) O juiz não pode ser afastado do cargo.", "B) A lei não pode excluir a apreciação do Poder Judiciário.", "C) O processo deve ser sempre secreto.", "D) O direito não pode ser discutido em juízo."],
+                correta: 0,
+                expl_certa: "A inafastabilidade da jurisdição significa que a lei não pode excluir da apreciação do Judiciário uma lesão ou ameaça a direito.",
+                expl_errada: "A ideia central é a garantia de acesso ao Judiciário, não a exclusão do poder judicial.",
+                dica: "Dica: ninguém pode ser impedido de buscar o Judiciário para proteger um direito."
+            },
+            {
+                pergunta: "Qual é a consequência do princípio da inafastabilidade da jurisdição?",
+                opcoes: ["A) O cidadão sempre pode buscar solução judicial.", "B) O juiz fica impedido de agir.", "C) O processo deixa de existir.", "D) A lei não pode ser aplicada."],
+                correta: 1,
+                expl_certa: "O cidadão pode buscar a tutela jurisdicional para proteger direito lesado ou ameaçado, mesmo que a lei ou a vontade das partes tentem evitar a judicialização.",
+                expl_errada: "Não é sobre impedir a atuação do juiz, e sim garantir acesso ao Judiciário.",
+                dica: "Dica: a regra é garantir o acesso à Justiça."
+            },
+            // Slide 7
+            {
+                pergunta: "O princípio da isonomia processual exige que:",
+                opcoes: ["A) As partes tenham tratamento igual diante do processo.", "B) O juiz puna apenas uma parte.", "C) A prova seja dispensada.", "D) A sentença seja sempre favorável ao Estado."],
+                correta: 2,
+                expl_certa: "A isonomia processual exige tratamento equitativo entre as partes, com a mesma possibilidade de defesa e de participação no processo.",
+                expl_errada: "O processo não é um espaço para privilégio de uma parte; deve haver igualdade de condições e tratamento.",
+                dica: "Dica: igualdade de tratamento e de defesa."
+            },
+            {
+                pergunta: "O que garante a imparcialidade do juiz no processo?",
+                opcoes: ["A) A ausência de regras.", "B) A independência e a neutralidade do julgador.", "C) Apenas a vontade das partes.", "D) O silêncio do processo."],
+                correta: 3,
+                expl_certa: "A imparcialidade exige que o juiz seja independente e neutro, sem favorecer uma parte nem agir movido por interesses próprios.",
+                expl_errada: "O juiz não pode atuar por mera vontade das partes; a neutralidade é essencial.",
+                dica: "Dica: juiz imparcial = decisão sem favorecimento."
+            },
+            // Slide 8
+            {
+                pergunta: "Qual principal característica da estrutura processual?",
+                opcoes: ["A) A divisão em fases e a atuação dos sujeitos processuais.", "B) A ausência de atos jurídicos.", "C) O fim imediato da lide.", "D) A impossibilidade de recurso."],
+                correta: 0,
+                expl_certa: "A estrutura processual organiza a atuação dos sujeitos, as fases, as provas e a decisão, permitindo a solução do conflito de modo ordenado.",
+                expl_errada: "O processo é estruturado em fases e etapas; não é mera ausência de regras ou de atos jurídicos.",
+                dica: "Dica: processo é organizado, sequencial e regido por regras."
+            },
+            {
+                pergunta: "Qual é o papel da iniciativa das partes no processo?",
+                opcoes: ["A) Não existe qualquer atuação pelas partes.", "B) As partes impulsionam a demanda e formulam as alegações.", "C) O juiz decide sem ouvir ninguém.", "D) A iniciativa é apenas do Estado."],
+                correta: 1,
+                expl_certa: "As partes têm papel ativo na promoção e no desenvolvimento da demanda, apresentando alegações, provas e sustentações.",
+                expl_errada: "O processo não se desenvolve sem a atuação das partes; elas são protagonistas da demanda.",
+                dica: "Dica: a iniciativa e as alegações são das partes, com a condução judicial."
+            },
+            // Slide 9
+            {
+                pergunta: "Qual a função do juiz dentro do processo?",
+                opcoes: ["A) Apenas decidir sem ouvir as partes.", "B) Dirigir o processo e aplicar o direito à controvérsia.", "C) Participar diretamente como parte ativa.", "D) Eliminar as provas."],
+                correta: 2,
+                expl_certa: "O juiz atua como órgão imparcial, conduzindo o processo e aplicando o direito à controvérsia apresentada pelas partes.",
+                expl_errada: "O juiz não pode agir como parte e nem decidir sem observância do processo; ele conduz e decide de forma imparcial.",
+                dica: "Dica: juiz = órgão imparcial que conduz e decide."
+            },
+            {
+                pergunta: "O que demonstra a relação entre processo e jurisdição?",
+                opcoes: ["A) O processo é o instrumento pela qual a jurisdição se realiza.", "B) O processo é o mesmo que a decisão final.", "C) A jurisdição não precisa de processo.", "D) O processo elimina a autonomia das partes."],
+                correta: 3,
+                expl_certa: "A jurisdição se realiza por meio do processo, que é a forma organizada de exercer a função estatal de decidir conflitos.",
+                expl_errada: "A jurisdição não é a própria decisão final nem é dispensada do processo; ela é exercida por ele.",
+                dica: "Dica: a jurisdição se materializa no processo."
+            },
+            // Slide 10
+            {
+                pergunta: "Qual é o objetivo principal do mapa mental do processo?",
+                opcoes: ["A) Simplificar o estudo e mostrar a inter-relação dos institutos.", "B) Eliminar a necessidade de estudo da lei.", "C) Transformar o direito em memória.", "D) Proibir a análise crítica."],
+                correta: 0,
+                expl_certa: "O mapa mental organiza os institutos e suas relações para facilitar a compreensão global do processo e de sua lógica.",
+                expl_errada: "O mapa não substitui a lei nem elimina o estudo; ele ajuda a visualizar a estrutura conceptual.",
+                dica: "Dica: o mapa serve de síntese para conectar ideias."
+            },
+            {
+                pergunta: "Por que o estudo de caso é importante na Teoria Geral do Processo?",
+                opcoes: ["A) Porque mostra como a teoria se aplica na solução de conflitos reais.", "B) Porque elimina qualquer dúvida legal.", "C) Porque substitui a necessidade de legislação.", "D) Porque só vale para disciplina penal."],
+                correta: 1,
+                expl_certa: "Os estudos de caso conectam a teoria ao contexto real, mostrando como o direito processual se aplica na solução de controvérsias.",
+                expl_errada: "A teoria processual não se dissolve no caso; ela é aplicada e compreendida a partir dele.",
+                dica: "Dica: o caso prático ajuda a ver a teoria funcionando."
+            }
+        ],
+
+        'DCPG': [
+            // Slide 2
+            {
+                pergunta: "O que a LINDB busca regular principalmente?",
+                opcoes: ["A) A aplicação e a interpretação das normas jurídicas no tempo e no espaço.", "B) Apenas as normas penais.", "C) Os contratos comerciais.", "D) As regras do processo criminal."],
+                correta: 2,
+                expl_certa: "A LINDB regula o funcionamento geral das normas jurídicas, particularmente sua vigência, eficácia, aplicação e interpretação no tempo e no espaço.",
+                expl_errada: "A LINDB não se limita ao Direito Penal nem à execução de contratos; seu campo é a aplicação das normas jurídicas em geral.",
+                dica: "Dica: LINDB = regras gerais sobre a aplicação das leis."
+            },
+            {
+                pergunta: "Qual é o papel da LINDB no ordenamento jurídico brasileiro?",
+                opcoes: ["A) Servir de norma introdutória e geral do sistema jurídico.", "B) Substituir o Código Civil.", "C) Omitir regras sobre vigência.", "D) Regular apenas o Direito do Trabalho."],
+                correta: 3,
+                expl_certa: "A LINDB funciona como norma introdutória do ordenamento, estabelecendo as regras gerais para a aplicação e interpretação das leis.",
+                expl_errada: "Ela não substitui os códigos setoriais; atua como base geral do sistema jurídico.",
+                dica: "Dica: a LINDB organiza a aplicação das leis no sistema jurídico."
+            },
+            // Slide 3
+            {
+                pergunta: "A lei, salvo disposição em contrário, começa a vigorar após quanto tempo de sua publicação oficial?",
+                opcoes: ["A) 10 dias.", "B) 15 dias.", "C) 30 dias.", "D) 45 dias."],
+                correta: 0,
+                expl_certa: "Nos termos da LINDB, salvo disposição em contrário, a lei entra em vigor 45 dias após a publicação oficial.",
+                expl_errada: "O prazo padrão no Brasil é de 45 dias, e não 10, 15 ou 30.",
+                dica: "Dica: o prazo padrão da vigência é 45 dias."
+            },
+            {
+                pergunta: "Por que a vigência da lei é relevante para a ordem jurídica?",
+                opcoes: ["A) Porque define quando a norma passa a produzir efeitos.", "B) Porque torna a norma irrelevante.", "C) Porque elimina a interpretação legal.", "D) Porque substitui a necessidade de direito material."],
+                correta: 1,
+                expl_certa: "A vigência marca o início da produção de efeitos da norma, sendo essencial para a aplicação correta da legislação.",
+                expl_errada: "A norma não produz efeitos desde a criação; sua vigência é o momento em que ela passa a valer juridicamente.",
+                dica: "Dica: vigência = início da validade da lei."
+            },
+            // Slide 4
+            {
+                pergunta: "Qual é a diferença entre vigência e eficácia da lei?",
+                opcoes: ["A) Vigência é o período de validade; eficácia é a capacidade de produzir efeitos na prática.", "B) Vigência é só para um caso concreto; eficácia é abstrata.", "C) Vigência e eficácia são a mesma coisa.", "D) Vigência só vale para normas penais."],
+                correta: 2,
+                expl_certa: "Vigência é o momento em que a norma entra em vigor; eficácia é a capacidade da norma de produzir efeitos no mundo jurídico concreto.",
+                expl_errada: "São conceitos distintos: vigência diz respeito ao começo da validade; eficácia diz respeito à produção de efeitos concretos.",
+                dica: "Dica: vigência é o início da lei; eficácia é o efeito dela no mundo jurídico."
+            },
+            {
+                pergunta: "Quando a lei deixa de produzir efeitos por revogação, isso significa que:",
+                opcoes: ["A) A norma foi retirada do ordenamento e deixa de valer.", "B) A lei nunca começou a vigorar.", "C) O juiz deve ignorar a constituição.", "D) O caso deixa de ser jurídico."],
+                correta: 3,
+                expl_certa: "Revogação é a forma pela qual a lei deixa de produzir efeitos, seja total ou parcialmente, em razão de nova regra jurídica.",
+                expl_errada: "A revogação não significa ausência de regra; significa a substituição ou cessação da norma anterior.",
+                dica: "Dica: revogação = a lei deixa de valer ou deixa de produzir efeitos."
+            },
+            // Slide 5
+            {
+                pergunta: "Qual é o papel da hermenêutica no Direito civil e geral?",
+                opcoes: ["A) Interpretar a norma para aplicar corretamente a vontade do legislador.", "B) Eliminar a lei.", "C) Criar regras sem base legal.", "D) Justificar qualquer decisão do juiz."],
+                correta: 0,
+                expl_certa: "A hermenêutica permite interpretar as normas para descobrir o sentido jurídico e aplicá-las adequadamente ao caso concreto.",
+                expl_errada: "A interpretação não elimina a lei nem autoriza decisões arbitrárias; ela busca a correta compreensão do texto normativo.",
+                dica: "Dica: hermenêutica = interpretação da lei."
+            },
+            {
+                pergunta: "O que acontece quando há lacuna na lei?",
+                opcoes: ["A) O Direito busca integração por analogia, princípio ou norma afim.", "B) O caso é automaticamente excluído do sistema.", "C) O juiz faz lei à vontade.", "D) A norma perde sua validade."],
+                correta: 1,
+                expl_certa: "Existem mecanismos de integração para suprir lacunas, como analogia e princípios gerais, respeitando o ordenamento jurídico.",
+                expl_errada: "A lacuna não significa que o caso fique sem solução; o sistema busca preenchê-la mediante técnicas de integração.",
+                dica: "Dica: lacuna = ausência de regra específica; o sistema busca completar."
+            },
+            // Slide 6
+            {
+                pergunta: "Qual é a relevância do conflito de leis no espaço?",
+                opcoes: ["A) Definir qual lei deve reger uma situação quando há elementos em diferentes localidades.", "B) Eliminar todas as normas de outros países.", "C) Substituir os tratados internacionais.", "D) Proibir a aplicação do direito brasileiro."],
+                correta: 2,
+                expl_certa: "O conflito de leis no espaço analisa qual norma será aplicada quando a situação apresenta elementos vinculados a diferentes territórios.",
+                expl_errada: "O conflito de leis não exclui o direito brasileiro nem a aplicação da lei; ele define a regra aplicável ao caso.",
+                dica: "Dica: pense em qual lei vale quando a situação tem vínculo com mais de um lugar."
+            },
+            {
+                pergunta: "Em termos da pessoa natural, qual critério é importante para a aplicação da lei?",
+                opcoes: ["A) O local de nascimento, domicílio, residência e vínculo pessoal.", "B) Apenas a vontade do juiz.", "C) A aparência física.", "D) O sobrenome familiar."],
+                correta: 3,
+                expl_certa: "A aplicação da lei depende de critérios como nacionalidade, domicílio, residência e outros nexos jurídicos relevantes para a relação.",
+                expl_errada: "Esses critérios não são meramente pessoais; são elementos jurídicos relevantes para fixar a regra aplicável.",
+                dica: "Dica: pense em vínculo jurídico e localidade da situação."
+            },
+            // Slide 7
+            {
+                pergunta: "Os direitos da personalidade são caracterizados por serem:",
+                opcoes: ["A) Inatos, absolutos e extrapatrimoniais.", "B) Simplesmente econômicos e transferíveis.", "C) Restritos ao patrimônio.", "D) Apenas de natureza trabalhista."],
+                correta: 0,
+                expl_certa: "Os direitos da personalidade são inatos, absolutos e extrapatrimoniais, ligando-se à dignidade e integridade da pessoa humana.",
+                expl_errada: "Eles não são patrimoniais nem transferíveis de forma plena; são direitos fundamentais da pessoa.",
+                dica: "Dica: dignidade, integridade e não patrimonialidade."
+            },
+            {
+                pergunta: "Qual a principal característica dos direitos da personalidade?",
+                opcoes: ["A) Serem oponíveis a todos, inclusive terceiros.", "B) Dependem de contrato para valer.", "C) São apenas direitos patrimoniais.", "D) Só valem após a morte."],
+                correta: 1,
+                expl_certa: "Os direitos da personalidade têm natureza absoluta, isto é, são oponíveis erga omnes, protegendo a pessoa contra lesões por terceiros.",
+                expl_errada: "Não dependem apenas de contrato e nem são apenas patrimoniais; são direitos fundamentais e gerais.",
+                dica: "Dica: oponíveis a todos e protegendo a pessoa."
+            },
+            // Slide 8
+            {
+                pergunta: "Por que a segurança jurídica é um valor central do Direito Civil?",
+                opcoes: ["A) Porque garante previsibilidade e estabilidade do ordenamento.", "B) Porque elimina toda crítica jurídica.", "C) Porque substitui a legislação.", "D) Porque proíbe qualquer mudança de regra."],
+                correta: 2,
+                expl_certa: "A segurança jurídica busca previsibilidade, confiança e estabilidade das relações jurídicas, permitindo que o ordenamento seja aplicável com certeza.",
+                expl_errada: "Segurança jurídica não é ausência de mudança, e sim previsibilidade e estabilidade para o direito.",
+                dica: "Dica: pensar em previsibilidade e confiança no ordenamento."
+            },
+            {
+                pergunta: "Qual é o efeito da segurança jurídica no plano do direito privado?",
+                opcoes: ["A) Contribuir para a estabilidade das relações jurídicas.", "B) Desestabilizar o patrimônio.", "C) Garantir que não haja normas.", "D) Excluir a aplicação da lei."],
+                correta: 3,
+                expl_certa: "A segurança jurídica é um valor do ordenamento que protege a estabilidade das relações privadas e a confiança legítima nas regras vigentes.",
+                expl_errada: "Não se trata de excluir a lei ou de desestabilizar o direito; é o contrário: estabilidade e confiabilidade.",
+                dica: "Dica: o direito deve dar previsibilidade para a vida social."
+            },
+            // Slide 9
+            {
+                pergunta: "Qual é a função do mapa mental na estrutura da LINDB?",
+                opcoes: ["A) Organizar visualmente as relações entre vigência, eficácia, aplicação e integração.", "B) Substituir a lei.", "C) Excluir a hermenêutica.", "D) Deixar o estudo sem lógica."],
+                correta: 0,
+                expl_certa: "O mapa mental ajuda a visualizar a estrutura da LINDB e como seus temas se conectam: vigência, eficácia, aplicação, integração e conflito de leis.",
+                expl_errada: "Ele não substitui a lei nem elimina interpretação; ele organiza o conhecimento para facilitar a compreensão.",
+                dica: "Dica: o mapa mostra a conexão entre os institutos principais da LINDB."
+            },
+            {
+                pergunta: "Por que o estudo da LINDB é importante para o Direito Civil?",
+                opcoes: ["A) Porque ela orienta a aplicação das normas em todo o ordenamento jurídico.", "B) Porque substitui o Código Civil.", "C) Porque elimina a análise do caso concreto.", "D) Porque só vale para normas penais."],
+                correta: 1,
+                expl_certa: "A LINDB fornece os princípios e regras gerais para a aplicação das normas no Direito Civil e no restante do ordenamento jurídico.",
+                expl_errada: "A LINDB não substitui os códigos, mas orienta e estrutura a aplicação das regras jurídicas em geral.",
+                dica: "Dica: a LINDB é a base geral de aplicação do direito."
+            },
+            // Slide 10
+            {
+                pergunta: "Em um estudo de caso, o que se busca identificar?",
+                opcoes: ["A) As regras aplicáveis, o conflito de normas e o direito protegido.", "B) Apenas o nome do juiz.", "C) Somente a vontade das partes.", "D) Nenhum elemento jurídico."],
+                correta: 2,
+                expl_certa: "O estudo de caso busca identificar as normas envolvidas, o conflito de normas, a proteção jurídica e a forma correta de solução do problema.",
+                expl_errada: "O caso não se resume à vontade das partes; envolve a correta leitura do ordenamento e do problema jurídico.",
+                dica: "Dica: o caso trata de identificar normas, conflito e solução jurídica."
+            },
+            {
+                pergunta: "Qual é a importância da análise prática da LINDB e dos direitos da personalidade?",
+                opcoes: ["A) Aplicar os conceitos a situações reais e compreender a atuação do direito.", "B) Transformar a teoria em improviso.", "C) Ignorar a lógica do ordenamento.", "D) Substituir a necessidade de estudo das normas."],
+                correta: 3,
+                expl_certa: "A análise prática permite ver como a teoria da LINDB e dos direitos da personalidade funciona em casos concretos, reforçando a aplicação correta do ordenamento.",
+                expl_errada: "A teoria não fica sem valor; a prática serve para demonstrar sua aplicação correta.",
+                dica: "Dica: a aplicação prática conecta teoria e situação concreta."
+            }
+        ]
+    };
+
+    function embaralharRespostasCorretas() {
+        let ultimaCorreta = -1;
+
+        Object.values(bancoQuestoes).forEach((materiaQuestoes) => {
+            materiaQuestoes.forEach((questao) => {
+                let novaCorreta = Math.floor(Math.random() * 4);
+
+                while (ultimaCorreta !== -1 && novaCorreta === ultimaCorreta) {
+                    novaCorreta = Math.floor(Math.random() * 4);
+                }
+
+                questao.correta = novaCorreta;
+                ultimaCorreta = novaCorreta;
+            });
+        });
+    }
+
+    embaralharRespostasCorretas();
+
+    // ============================================================
+    // 3. LÓGICA DE FUNCIONAMENTO (SLIDES E QUIZ DINÂMICO)
+    // ============================================================
+
+    let pastaAtiva = 'DCO';
+    let slideIdx = 0;
+
+    const aulasPorMateria = {
+        'DCO': [
+            { id: 'aula-1', nome: 'Aula 1 ', status: 'ativa' },
+            { id: 'aula-2', nome: 'Aula 2', status: 'em-breve' },
+            { id: 'aula-3', nome: 'Aula 3', status: 'em-breve' }
+        ],
+        'TGP': [
+            { id: 'aula-1', nome: 'Aula 1 ', status: 'ativa' },
+            { id: 'aula-2', nome: 'Aula 2', status: 'em-breve' },
+            { id: 'aula-3', nome: 'Aula 3', status: 'em-breve' }
+        ],
+        'DCPG': [
+            { id: 'aula-1', nome: 'Aula 1 ', status: 'ativa' },
+            { id: 'aula-2', nome: 'Aula 2', status: 'em-breve' },
+            { id: 'aula-3', nome: 'Aula 3', status: 'em-breve' }
+        ]
+    };
+
+    function renderAulas(subPasta) {
+        const panel = document.getElementById('aulas-panel');
+        const aulas = aulasPorMateria[subPasta] || [];
+
+        panel.innerHTML = `
+            <div class="aulas-label">Aulas</div>
+            <div class="aulas-list">
+                ${aulas.map(aula => `
+                    <button
+                        class="aula-btn ${aula.id === 'aula-1' ? 'active' : ''}"
+                        data-materia="${subPasta}"
+                        data-aula="${aula.id}"
+                        ${aula.status === 'em-breve' ? 'disabled' : ''}
+                        onclick="carregarAula('${subPasta}', '${aula.id}', this)"
+                    >
+                        ${aula.nome}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function carregarMateria(subPasta, titulo, elementoMenu) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        elementoMenu.classList.add('active');
+
+        pastaAtiva = subPasta;
+        slideIdx = 0;
+        document.getElementById('titulo-materia').innerText = titulo;
+        renderAulas(subPasta);
+        carregarAula(subPasta, 'aula-1', document.querySelector(`.aula-btn[data-materia="${subPasta}"][data-aula="aula-1"]`));
+    }
+
+    function carregarAula(subPasta, aulaId, btnEl) {
+        const listaImagens = materias[subPasta].imagens;
+        const viewer = document.getElementById('slide-viewer');
+        viewer.classList.add('active');
+
+        if (btnEl) {
+            document.querySelectorAll('.aula-btn').forEach(el => el.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        const imgEl = document.getElementById('slide-atual');
+        imgEl.src = listaImagens[0];
+        imgEl.onerror = function() { this.alt = "Imagem não encontrada"; };
+
+        slideIdx = 0;
+        document.getElementById('slide-counter').innerText = `1 / ${listaImagens.length}`;
+        document.getElementById('contador-slides').innerText = `Slides: ${listaImagens.length}`;
+        document.getElementById('btn-prev').disabled = true;
+        document.getElementById('btn-next').disabled = (listaImagens.length <= 1);
+
+        gerarQuiz(subPasta);
+    }
+
+    function navegarSlide(direcao) {
+        const lista = materias[pastaAtiva].imagens;
+        const novoIdx = slideIdx + direcao;
+        if (novoIdx >= 0 && novoIdx < lista.length) {
+            slideIdx = novoIdx;
+            document.getElementById('slide-atual').src = lista[slideIdx];
+            document.getElementById('slide-counter').innerText = `${slideIdx + 1} / ${lista.length}`;
+            document.getElementById('btn-prev').disabled = (slideIdx === 0);
+            document.getElementById('btn-next').disabled = (slideIdx === lista.length - 1);
+            gerarQuiz(pastaAtiva);
+        }
+    }
+
+    function abrirSlideAmpliado() {
+        const imgAtual = document.getElementById('slide-atual');
+        if (!imgAtual || !imgAtual.src) return;
+
+        const largura = Math.min(window.screen.availWidth * 0.9, 1600);
+        const altura = Math.min(window.screen.availHeight * 0.9, 1000);
+        const esquerda = (window.screen.availWidth - largura) / 2;
+        const topo = (window.screen.availHeight - altura) / 2;
+
+        const params = `width=${Math.round(largura)},height=${Math.round(altura)},left=${Math.round(esquerda)},top=${Math.round(topo)}`;
+        const popup = window.open('', '_blank', params);
+
+        if (!popup) return;
+
+        popup.document.title = 'Slide ampliado';
+        popup.document.body.style.margin = '0';
+        popup.document.body.style.background = '#050816';
+        popup.document.body.style.display = 'flex';
+        popup.document.body.style.alignItems = 'center';
+        popup.document.body.style.justifyContent = 'center';
+        popup.document.body.style.fontFamily = 'Arial, sans-serif';
+
+        const frame = popup.document.createElement('div');
+        frame.style.position = 'relative';
+        frame.style.display = 'flex';
+        frame.style.alignItems = 'center';
+        frame.style.justifyContent = 'center';
+        frame.style.width = '100vw';
+        frame.style.height = '100vh';
+        frame.style.padding = '24px';
+        frame.style.boxSizing = 'border-box';
+
+        const imgWrap = popup.document.createElement('div');
+        imgWrap.style.display = 'flex';
+        imgWrap.style.alignItems = 'center';
+        imgWrap.style.justifyContent = 'center';
+        imgWrap.style.width = '100%';
+        imgWrap.style.height = '100%';
+        imgWrap.style.overflow = 'auto';
+        imgWrap.style.padding = '12px';
+        imgWrap.style.boxSizing = 'border-box';
+
+        const img = popup.document.createElement('img');
+        img.src = imgAtual.src;
+        img.alt = 'Slide ampliado';
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '100%';
+        img.style.objectFit = 'contain';
+        img.style.display = 'block';
+        img.style.borderRadius = '14px';
+        img.style.boxShadow = '0 18px 38px rgba(0,0,0,0.4)';
+        img.style.background = '#0b1220';
+        img.style.transition = 'transform 0.2s ease';
+        img.style.transformOrigin = 'center center';
+        img.style.transform = 'scale(1)';
+        img.style.cursor = 'zoom-in';
+
+        let zoomAtual = 1;
+
+        const aplicarZoom = () => {
+            img.style.transform = `scale(${zoomAtual})`;
+            img.style.cursor = zoomAtual > 1 ? 'zoom-out' : 'zoom-in';
+        };
+
+        const toolbar = popup.document.createElement('div');
+        toolbar.style.position = 'fixed';
+        toolbar.style.right = '18px';
+        toolbar.style.bottom = '18px';
+        toolbar.style.display = 'flex';
+        toolbar.style.gap = '8px';
+        toolbar.style.padding = '8px';
+        toolbar.style.borderRadius = '999px';
+        toolbar.style.background = 'rgba(9, 12, 20, 0.8)';
+        toolbar.style.backdropFilter = 'blur(8px)';
+        toolbar.style.boxShadow = '0 12px 28px rgba(0,0,0,0.3)';
+        toolbar.style.zIndex = '9';
+
+        const btnZoomMenos = popup.document.createElement('button');
+        btnZoomMenos.textContent = '-';
+        btnZoomMenos.type = 'button';
+        btnZoomMenos.style.width = '42px';
+        btnZoomMenos.style.height = '42px';
+        btnZoomMenos.style.borderRadius = '50%';
+        btnZoomMenos.style.border = '1px solid rgba(255,255,255,0.15)';
+        btnZoomMenos.style.background = '#162033';
+        btnZoomMenos.style.color = '#fff';
+        btnZoomMenos.style.fontSize = '24px';
+        btnZoomMenos.style.cursor = 'pointer';
+        btnZoomMenos.onclick = () => {
+            zoomAtual = Math.max(1, Number((zoomAtual - 0.2).toFixed(2)));
+            aplicarZoom();
+        };
+
+        const btnZoomMais = popup.document.createElement('button');
+        btnZoomMais.textContent = '+';
+        btnZoomMais.type = 'button';
+        btnZoomMais.style.width = '42px';
+        btnZoomMais.style.height = '42px';
+        btnZoomMais.style.borderRadius = '50%';
+        btnZoomMais.style.border = '1px solid rgba(255,255,255,0.15)';
+        btnZoomMais.style.background = '#162033';
+        btnZoomMais.style.color = '#fff';
+        btnZoomMais.style.fontSize = '24px';
+        btnZoomMais.style.cursor = 'pointer';
+        btnZoomMais.onclick = () => {
+            zoomAtual = Math.min(3, Number((zoomAtual + 0.2).toFixed(2)));
+            aplicarZoom();
+        };
+
+        toolbar.appendChild(btnZoomMenos);
+        toolbar.appendChild(btnZoomMais);
+
+        img.onclick = () => {
+            zoomAtual = zoomAtual > 1 ? 1 : 1.8;
+            aplicarZoom();
+        };
+
+        imgWrap.appendChild(img);
+        frame.appendChild(imgWrap);
+        popup.document.body.appendChild(frame);
+        popup.document.body.appendChild(toolbar);
+        aplicarZoom();
+        popup.focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const imgAtual = document.getElementById('slide-atual');
+        if (imgAtual) {
+            imgAtual.addEventListener('click', abrirSlideAmpliado);
+        }
+    });
+
+    // ============================================================
+    // 4. SISTEMA DE QUIZ COM EXPLICAÇÕES DETALHADAS
+    // ============================================================
+
+    function gerarQuiz(subPasta) {
+        const container = document.getElementById('container-quiz');
+        const questoesDaMateria = bancoQuestoes[subPasta] || [];
+
+        if (slideIdx === 0) {
+            document.getElementById('qtd-perguntas').innerText = '0 Perguntas neste slide';
+            container.innerHTML = `
+                <div class="q-box" style="border-left-color: var(--roxo-glow);">
+                    <div class="q-text" style="margin-bottom: 8px; color: #d8b4fe;">Primeiro slide</div>
+                    <p class="fb-desc">O quiz começa a partir do segundo slide. Revise o conteúdo inicial e avance para continuar.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const indiceSlideComPergunta = slideIdx - 1;
+        const indiceInicial = indiceSlideComPergunta * 2;
+        const perguntasDoSlide = questoesDaMateria.slice(indiceInicial, indiceInicial + 2);
+
+        const tituloSlide = `Perguntas do slide ${slideIdx + 1}`;
+        document.getElementById('qtd-perguntas').innerText = `${perguntasDoSlide.length || 0} Perguntas neste slide`;
+
+        if (!perguntasDoSlide.length) {
+            container.innerHTML = `
+                <div class="q-box">
+                    <div class="q-text">${tituloSlide}</div>
+                    <p class="fb-desc">Ainda não há perguntas cadastradas para este slide. Ao avançar para a próxima etapa, novas perguntas serão exibidas aqui.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="q-box" style="border-left-color: var(--roxo-glow);">
+                <div class="q-text" style="margin-bottom: 8px; color: #d8b4fe;">${tituloSlide}</div>
+                <p class="fb-desc">Revise o conteúdo do slide atual e responda as questões abaixo.</p>
+            </div>
+        `;
+
+        perguntasDoSlide.forEach((q, index) => {
+            const globalIndex = indiceInicial + index;
+            const box = document.createElement('div');
+            box.className = 'q-box';
+            
+            let optsHtml = q.opcoes.map((op, oIdx) => 
+                `<button class="opt-btn" onclick="avaliarResposta('${subPasta}', ${globalIndex}, ${oIdx})">${op}</button>`
+            ).join('');
+
+            box.innerHTML = `
+                <div class="q-text">${globalIndex + 1}. ${q.pergunta}</div>
+                <div class="opts-wrapper">${optsHtml}</div>
+                <div class="fb-box" id="fb-${subPasta}-${globalIndex}">
+                    <span class="fb-title" id="fbTitle-${subPasta}-${globalIndex}"></span>
+                    <p class="fb-desc" id="fbDesc-${subPasta}-${globalIndex}"></p>
+                    <button class="btn-dica" onclick="exibirDica('${subPasta}', ${globalIndex})">💡 Estou em dúvida</button>
+                    <div class="dica-text" id="dica-${subPasta}-${globalIndex}">${q.dica}</div>
+                </div>
+            `;
+            container.appendChild(box);
+        });
+    }
+
+    function avaliarResposta(subPasta, qIdx, opEscolhida) {
+        const q = bancoQuestoes[subPasta][qIdx];
+        if (!q) return;
+
+        const fb = document.getElementById(`fb-${subPasta}-${qIdx}`);
+        if (!fb || fb.classList.contains('active')) return;
+
+        const perguntaBox = fb.closest('.q-box');
+        if (!perguntaBox) return;
+
+        const btns = perguntaBox.querySelectorAll('.opt-btn');
+        const fbTitle = document.getElementById(`fbTitle-${subPasta}-${qIdx}`);
+        const fbDesc = document.getElementById(`fbDesc-${subPasta}-${qIdx}`);
+        const dica = document.getElementById(`dica-${subPasta}-${qIdx}`);
+
+        btns.forEach(b => b.disabled = true);
+        const acertou = opEscolhida === q.correta;
+        const letraEscolhida = String.fromCharCode(65 + opEscolhida);
+        const letraCorreta = String.fromCharCode(65 + q.correta);
+        const textoEscolhido = q.opcoes[opEscolhida].replace(/^[A-Z]\)\s*/, '');
+        const textoCorreto = q.opcoes[q.correta].replace(/^[A-Z]\)\s*/, '');
+
+        btns.forEach((b, idx) => {
+            if (idx === q.correta) b.classList.add('correct');
+            if (idx === opEscolhida && !acertou) b.classList.add('wrong');
+        });
+
+        fb.classList.add('active');
+
+        if (acertou) {
+            fb.classList.add('correct-fb');
+            fbTitle.style.color = "var(--success)";
+            fbTitle.innerHTML = "✅ Parabéns! Você acertou.";
+            fbDesc.innerHTML = `
+                <strong>Você escolheu:</strong> ${letraCorreta}) ${textoCorreto}<br><br>
+                <strong>Por que essa opção é a correta:</strong> ${q.expl_certa}<br><br>
+                <strong>Justificativa da sua escolha:</strong> A sua resposta está alinhada ao conceito jurídico correto do material. Você identificou a alternativa que melhor expressa a regra, o princípio ou a classificação correta do tema.
+            `;
+        } else {
+            fb.classList.add('wrong-fb');
+            fbTitle.style.color = "var(--error)";
+            fbTitle.innerHTML = "❌ Resposta incorreta. Veja o porquê!";
+            fbDesc.innerHTML = `
+                <strong>Você escolheu:</strong> ${letraEscolhida}) ${textoEscolhido}<br><br>
+                <strong>Por que a sua opção não é a correta:</strong> ${q.expl_errada}<br><br>
+                <strong>Resposta correta:</strong> ${letraCorreta}) ${textoCorreto}.<br><br>
+                <strong>Por que a opção correta é a certa:</strong> ${q.expl_certa}
+            `;
+        }
+
+        if (dica) {
+            dica.innerHTML = `💡 Dica final: ${q.dica}`;
+            dica.classList.add('active');
+        }
+    }
+
+    function exibirDica(subPasta, idx) {
+        const dica = document.getElementById(`dica-${subPasta}-${idx}`);
+        dica.classList.toggle('active');
+    }
+
+    let deferredPrompt = null;
+    const installButton = document.getElementById('install-button');
+
+    function mostrarBotaoInstalacao() {
+        if (installButton) {
+            installButton.classList.add('visible');
+        }
+    }
+
+    function ocultarBotaoInstalacao() {
+        if (installButton) {
+            installButton.classList.remove('visible');
+        }
+    }
+
+    async function registrarServiceWorker() {
+        if (!('serviceWorker' in navigator)) return;
+
+        try {
+            await navigator.serviceWorker.register('./sw.js');
+        } catch (error) {
+            console.error('Erro ao registrar service worker:', error);
+        }
+    }
+
+    function inicializarPwa() {
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredPrompt = event;
+            mostrarBotaoInstalacao();
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            ocultarBotaoInstalacao();
+        });
+
+        if (installButton) {
+            installButton.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    alert('O botão de instalação aparece automaticamente no navegador quando o app está pronto para ser instalado.');
+                    return;
+                }
+
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('Instalação aceita pelo usuário.');
+                } else {
+                    console.log('Instalação rejeitada pelo usuário.');
+                }
+                deferredPrompt = null;
+                ocultarBotaoInstalacao();
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderAulas('DCO');
+        const botaoInicial = document.querySelector('.aula-btn[data-materia="DCO"][data-aula="aula-1"]');
+        if (botaoInicial) {
+            carregarMateria('DCO', 'Direito das Obrigações', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
+            carregarAula('DCO', 'aula-1', botaoInicial);
+        }
+
+        registrarServiceWorker();
+        inicializarPwa();
+    });
+</script>
+</body>
+</html>

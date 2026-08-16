@@ -621,9 +621,9 @@
                 <img src="Logo Nosyre Tech.png" alt="Nosyre Tech" onerror="this.style.display='none'">
                 <h1>Revista Jurídica<br>Digital</h1>
             </div>
-            <div class="nav-title">Acervo de Estudos</div>
+            <div class="nav-title">Acervo de Estudos:</div>
             
-            <div class="nav-item active" onclick="carregarMateria('DCO', 'Direito Civil - Obrigações', this)">
+            <div class="nav-item" onclick="carregarMateria('DCO', 'Direito Civil - Obrigações', this)">
                 <span>⚖️</span> <span>Direito Civil Obrigações</span>
             </div>
             <div class="nav-item" onclick="carregarMateria('TGP', 'Teoria Geral do Processo', this)">
@@ -646,8 +646,8 @@
                 <div class="slide-placeholder-content">
                     <img src="Logo Nosyre Tech.png" alt="Logo Nosyre Tech" onerror="this.style.display='none'">
                     <div>
-                        <strong>Selecione uma disciplina e uma aula</strong>
-                        <div>Escolha o conteúdo no acervo de estudos para visualizar os slides e responder ao quiz.</div>
+                        <strong>Selecione uma Disciplina e uma Aula</strong>
+                        <div>Escolha a disciplina e a aula no acervo de estudos para visualizar os slides e responder ao quiz.</div>
                     </div>
                 </div>
             </div>
@@ -745,7 +745,7 @@
             // Slide 2
             {
                 pergunta: "O que caracteriza uma obrigação civil em relação a um simples desejo ou uma expectativa moral?",
-                opcoes: ["A) A obrigação civil é um vínculo jurídico exigível.", "B) A obrigação civil depende apenas da vontade do credor.", "C) A obrigação civil não pode ser cumprida.", "D) A obrigação civil é sempre informal."],
+                opcoes: ["A obrigação civil é um vínculo jurídico exigível.", "A obrigação civil depende apenas da vontade do credor.", "A obrigação civil não pode ser cumprida.", "A obrigação civil é sempre informal."],
                 correta: 0,
                 expl_certa: "Uma obrigação civil é um vínculo jurídico exigível, com relação específica entre credor e devedor, e não apenas um desejo moral ou uma expectativa sem força jurídica.",
                 expl_errada: "O vínculo jurídico exigível é o núcleo da obrigação civil. Sem esse caráter, não há obrigação no sentido jurídico.",
@@ -1227,30 +1227,24 @@
         ]
     };
 
-    function embaralharRespostasCorretas() {
-        let ultimaCorreta = -1;
-
+    function validarQuestoesFixas() {
         Object.values(bancoQuestoes).forEach((materiaQuestoes) => {
             materiaQuestoes.forEach((questao) => {
-                let novaCorreta = Math.floor(Math.random() * 4);
-
-                while (ultimaCorreta !== -1 && novaCorreta === ultimaCorreta) {
-                    novaCorreta = Math.floor(Math.random() * 4);
+                const indiceValido = Number.isInteger(questao.correta) && questao.correta >= 0 && questao.correta < 4;
+                if (!indiceValido) {
+                    console.warn('Questão com resposta correta inválida:', questao.pergunta, questao.correta);
                 }
-
-                questao.correta = novaCorreta;
-                ultimaCorreta = novaCorreta;
             });
         });
     }
 
-    embaralharRespostasCorretas();
+    validarQuestoesFixas();
 
     // ============================================================
     // 3. LÓGICA DE FUNCIONAMENTO (SLIDES E QUIZ DINÂMICO)
     // ============================================================
 
-    let pastaAtiva = 'DCO';
+    let pastaAtiva = null;
     let slideIdx = 0;
 
     const aulasPorMateria = {
@@ -1289,6 +1283,19 @@
 
     function renderAulas(subPasta) {
         const panel = document.getElementById('aulas-panel');
+
+        if (!subPasta) {
+            panel.innerHTML = `
+                <div class="aulas-label">Aulas</div>
+                <div class="aulas-list">
+                    <button class="aula-btn" disabled>
+                        <span class="aula-nome">Selecione uma Disciplina</span>
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
         const aulas = aulasPorMateria[subPasta] || [];
 
         panel.innerHTML = `
@@ -1331,6 +1338,11 @@
     }
 
     function carregarAula(subPasta, aulaId, btnEl) {
+        if (!subPasta || !pastaAtiva || subPasta !== pastaAtiva) {
+            alert('Selecione primeiro uma matéria e depois a aula.');
+            return;
+        }
+
         const listaImagens = materias[subPasta].imagens;
         const viewer = document.getElementById('slide-viewer');
         mostrarSlideSelecionado();
@@ -1504,6 +1516,28 @@
     // 4. SISTEMA DE QUIZ COM EXPLICAÇÕES DETALHADAS
     // ============================================================
 
+    function embaralharOpcoes(opcoes, indiceCorretaOriginal) {
+        const opcoesEmbaralhadas = opcoes.map((texto, indiceOriginal) => ({ texto, indiceOriginal }));
+
+        for (let i = opcoesEmbaralhadas.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [opcoesEmbaralhadas[i], opcoesEmbaralhadas[j]] = [opcoesEmbaralhadas[j], opcoesEmbaralhadas[i]];
+        }
+
+        let indiceCorretaEmbaralhada = opcoesEmbaralhadas.findIndex(item => item.indiceOriginal === indiceCorretaOriginal);
+
+        if (indiceCorretaEmbaralhada === 0) {
+            const indiceTroca = 1 + Math.floor(Math.random() * (opcoesEmbaralhadas.length - 1));
+            [opcoesEmbaralhadas[0], opcoesEmbaralhadas[indiceTroca]] = [opcoesEmbaralhadas[indiceTroca], opcoesEmbaralhadas[0]];
+            indiceCorretaEmbaralhada = opcoesEmbaralhadas.findIndex(item => item.indiceOriginal === indiceCorretaOriginal);
+        }
+
+        return {
+            opcoes: opcoesEmbaralhadas.map(item => item.texto),
+            indiceCorreta: indiceCorretaEmbaralhada
+        };
+    }
+
     function gerarQuiz(subPasta) {
         const container = document.getElementById('container-quiz');
         const questoesDaMateria = bancoQuestoes[subPasta] || [];
@@ -1545,10 +1579,14 @@
 
         perguntasDoSlide.forEach((q, index) => {
             const globalIndex = indiceInicial + index;
+            const opcoesEmbaralhadas = embaralharOpcoes(q.opcoes, q.correta);
+            q.opcoesEmbaralhadas = opcoesEmbaralhadas.opcoes;
+            q.indiceCorretaEmbaralhada = opcoesEmbaralhadas.indiceCorreta;
+
             const box = document.createElement('div');
             box.className = 'q-box';
-            
-            let optsHtml = q.opcoes.map((op, oIdx) => 
+
+            let optsHtml = q.opcoesEmbaralhadas.map((op, oIdx) => 
                 `<button class="opt-btn" onclick="avaliarResposta('${subPasta}', ${globalIndex}, ${oIdx})">${op}</button>`
             ).join('');
 
@@ -1580,16 +1618,16 @@
         const fbTitle = document.getElementById(`fbTitle-${subPasta}-${qIdx}`);
         const fbDesc = document.getElementById(`fbDesc-${subPasta}-${qIdx}`);
         const dica = document.getElementById(`dica-${subPasta}-${qIdx}`);
+        const opcoesAtuais = q.opcoesEmbaralhadas || q.opcoes;
+        const indiceCorretaAtual = q.indiceCorretaEmbaralhada ?? q.correta;
 
         btns.forEach(b => b.disabled = true);
-        const acertou = opEscolhida === q.correta;
-        const letraEscolhida = String.fromCharCode(65 + opEscolhida);
-        const letraCorreta = String.fromCharCode(65 + q.correta);
-        const textoEscolhido = q.opcoes[opEscolhida].replace(/^[A-Z]\)\s*/, '');
-        const textoCorreto = q.opcoes[q.correta].replace(/^[A-Z]\)\s*/, '');
+        const acertou = opEscolhida === indiceCorretaAtual;
+        const textoEscolhido = opcoesAtuais[opEscolhida].replace(/^[A-Z]\)\s*/, '');
+        const textoCorreto = opcoesAtuais[indiceCorretaAtual].replace(/^[A-Z]\)\s*/, '');
 
         btns.forEach((b, idx) => {
-            if (idx === q.correta) b.classList.add('correct');
+            if (idx === indiceCorretaAtual) b.classList.add('correct');
             if (idx === opEscolhida && !acertou) b.classList.add('wrong');
         });
 
@@ -1598,26 +1636,28 @@
         if (acertou) {
             fb.classList.add('correct-fb');
             fbTitle.style.color = "var(--success)";
-            fbTitle.innerHTML = "✅ Parabéns! Você acertou.";
+            fbTitle.innerHTML = "✅ Correto! Sua resposta está certa.";
             fbDesc.innerHTML = `
-                <strong>Você escolheu:</strong> ${letraCorreta}) ${textoCorreto}<br><br>
-                <strong>Por que essa opção é a correta:</strong> ${q.expl_certa}<br><br>
-                <strong>Justificativa da sua escolha:</strong> A sua resposta está alinhada ao conceito jurídico correto do material. Você identificou a alternativa que melhor expressa a regra, o princípio ou a classificação correta do tema.
+                <strong>Você escolheu:</strong> ${textoEscolhido}<br><br>
+                <strong>Por que essa alternativa é a correta:</strong> ${q.expl_certa}<br><br>
+                <strong>Justificativa da escolha:</strong> Sua resposta está alinhada ao conceito jurídico correto do tema. Você identificou a alternativa que melhor expressa a regra, o princípio ou a classificação correta da questão.<br><br>
+                <strong>Dica para lembrar na próxima vez:</strong> ${q.dica}
             `;
         } else {
             fb.classList.add('wrong-fb');
             fbTitle.style.color = "var(--error)";
             fbTitle.innerHTML = "❌ Resposta incorreta. Veja o porquê!";
             fbDesc.innerHTML = `
-                <strong>Você escolheu:</strong> ${letraEscolhida}) ${textoEscolhido}<br><br>
+                <strong>Você escolheu:</strong> ${textoEscolhido}<br><br>
                 <strong>Por que a sua opção não é a correta:</strong> ${q.expl_errada}<br><br>
-                <strong>Resposta correta:</strong> ${letraCorreta}) ${textoCorreto}.<br><br>
-                <strong>Por que a opção correta é a certa:</strong> ${q.expl_certa}
+                <strong>Resposta correta:</strong> ${textoCorreto}.<br><br>
+                <strong>Por que a opção correta é a certa:</strong> ${q.expl_certa}<br><br>
+                <strong>Dica para lembrar na próxima vez:</strong> ${q.dica}
             `;
         }
 
         if (dica) {
-            dica.innerHTML = `💡 Dica final: ${q.dica}`;
+            dica.innerHTML = `💡 Dica para lembrar: ${q.dica}`;
             dica.classList.add('active');
         }
     }
@@ -1686,7 +1726,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        renderAulas('DCO');
+        pastaAtiva = null;
+        renderAulas(null);
         mostrarPlaceholderSlide();
         const tituloEl = document.getElementById('titulo-materia');
         tituloEl.innerText = 'Anhanguera - 2º Período - Turma A (2026.2) / Noturno';

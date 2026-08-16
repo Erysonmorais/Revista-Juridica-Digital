@@ -636,7 +636,7 @@
         <main class="main-content">
             <div class="header-area">
                 <h2 id="titulo-materia">Direito Civil - Obrigações</h2>
-                <div class="badge" id="contador-slides">Slides: 0</div>
+                <div class="badge" id="contador-slides" style="display: none;">Slides: 0</div>
             </div>
 
             <div class="slide-placeholder" id="slide-placeholder">
@@ -1272,7 +1272,9 @@
         document.getElementById('slide-placeholder').style.display = 'flex';
         document.getElementById('slide-viewer').classList.remove('active');
         document.getElementById('slide-viewer').style.display = 'none';
-        document.getElementById('contador-slides').innerText = 'Slides: 0';
+        const contadorSlides = document.getElementById('contador-slides');
+        contadorSlides.innerText = 'Slides: 0';
+        contadorSlides.style.display = 'none';
         document.getElementById('slide-counter').innerText = '0 / 0';
     }
 
@@ -1341,7 +1343,9 @@
 
         slideIdx = 0;
         document.getElementById('slide-counter').innerText = `1 / ${listaImagens.length}`;
-        document.getElementById('contador-slides').innerText = `Slides: ${listaImagens.length}`;
+        const contadorSlides = document.getElementById('contador-slides');
+        contadorSlides.innerText = `Slides: ${listaImagens.length}`;
+        contadorSlides.style.display = 'inline-flex';
         document.getElementById('btn-prev').disabled = true;
         document.getElementById('btn-next').disabled = (listaImagens.length <= 1);
 

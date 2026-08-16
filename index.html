@@ -185,7 +185,9 @@
 
         .aula-btn {
             width: 100%;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             padding: 10px 8px;
             border-radius: 10px;
@@ -199,6 +201,10 @@
             font-weight: 600;
             min-height: 48px;
             box-sizing: border-box;
+        }
+
+        .aula-btn .aula-nome {
+            line-height: 1.2;
         }
 
         .aula-btn:hover:not(:disabled) {
@@ -237,7 +243,25 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .header-area h2 { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #fff, #94a3b8); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-area h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: none;
+        }
+
+        .header-area h2.titulo-institucional {
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 35%, #fdba74 70%, #fde68a 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-area h2.titulo-materia {
+            background: linear-gradient(90deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         .header-area .badge { background: var(--bg-hover); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--border-light); }
 
         /* --- SLIDE VIEWER --- */
@@ -254,6 +278,45 @@
         }
         
         .slide-container.active { display: block; animation: fadeSlide 0.5s ease-out; }
+
+        .slide-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 420px;
+            background: linear-gradient(180deg, rgba(21,25,38,0.95), rgba(11,15,26,0.95));
+            border-radius: 22px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+            margin-bottom: 18px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .slide-placeholder-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+
+        .slide-placeholder img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(139, 92, 246, 0.25);
+            padding: 12px;
+        }
+
+        .slide-placeholder strong {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
 
         @keyframes fadeSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -458,6 +521,16 @@
         }
 
         @media (min-width: 900px) {
+            .header-area h2.titulo-institucional {
+                font-size: 1.85rem;
+            }
+
+            .header-area h2.titulo-materia {
+                font-size: 1.85rem;
+            }
+        }
+
+        @media (min-width: 900px) {
             body {
                 padding: 28px;
                 align-items: flex-start;
@@ -543,7 +616,7 @@
         <nav class="sidebar" id="sidebar">
             <div class="logo-wrapper">
                 <img src="Logo Nosyre Tech.png" alt="Nosyre Tech" onerror="this.style.display='none'">
-                <h1>Revista Jurídica<br>Didital</h1>
+                <h1>Revista Jurídica<br>Digital</h1>
             </div>
             <div class="nav-title">Acervo de Estudos</div>
             
@@ -566,7 +639,17 @@
                 <div class="badge" id="contador-slides">Slides: 0</div>
             </div>
 
-            <div class="slide-container active" id="slide-viewer">
+            <div class="slide-placeholder" id="slide-placeholder">
+                <div class="slide-placeholder-content">
+                    <img src="Logo Nosyre Tech.png" alt="Logo Nosyre Tech" onerror="this.style.display='none'">
+                    <div>
+                        <strong>Selecione uma disciplina e uma aula</strong>
+                        <div>Escolha o conteúdo no acervo de estudos para visualizar os slides e responder ao quiz.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-container" id="slide-viewer">
                 <div class="slide-img-wrapper" id="slide-zoom-area">
                     <img id="slide-atual" src="" alt="Slide da matéria">
                     <button class="slide-zoom-btn" type="button" onclick="abrirSlideAmpliado()">Ampliar</button>
@@ -582,9 +665,14 @@
             <div class="quiz-wrapper">
                 <div class="quiz-header">
                     <h3>📝 Quiz de Fixação</h3>
-                    <span id="qtd-perguntas">20 Perguntas</span>
+                    <span id="qtd-perguntas">Escolha uma aula</span>
                 </div>
-                <div id="container-quiz"></div>
+                <div id="container-quiz">
+                    <div class="q-box" style="border-left-color: var(--roxo-glow);">
+                        <div class="q-text" style="margin-bottom: 8px; color: #d8b4fe;">Aguardando seleção</div>
+                        <p class="fb-desc">Selecione uma disciplina e uma aula para que os slides e as perguntas apareçam aqui.</p>
+                    </div>
+                </div>
             </div>
 
             <footer>
@@ -599,7 +687,7 @@
     // ============================================================
     const materias = {
         'DCO': {
-            titulo: 'Direito das Obrigações',
+            titulo: 'Direito Civil - Obrigações',
             imagens: [
                 '1-Direito Civil - Obrigações/DCO/Aula 1/1_Direito-das-Obrigacoes-Fundamentos-Estrutura-e-Execucao.png',
                 '1-Direito Civil - Obrigações/DCO/Aula 1/2_Editorial.png',
@@ -1180,6 +1268,20 @@
         ]
     };
 
+    function mostrarPlaceholderSlide() {
+        document.getElementById('slide-placeholder').style.display = 'flex';
+        document.getElementById('slide-viewer').classList.remove('active');
+        document.getElementById('slide-viewer').style.display = 'none';
+        document.getElementById('contador-slides').innerText = 'Slides: 0';
+        document.getElementById('slide-counter').innerText = '0 / 0';
+    }
+
+    function mostrarSlideSelecionado() {
+        document.getElementById('slide-placeholder').style.display = 'none';
+        document.getElementById('slide-viewer').style.display = 'block';
+        document.getElementById('slide-viewer').classList.add('active');
+    }
+
     function renderAulas(subPasta) {
         const panel = document.getElementById('aulas-panel');
         const aulas = aulasPorMateria[subPasta] || [];
@@ -1189,13 +1291,13 @@
             <div class="aulas-list">
                 ${aulas.map(aula => `
                     <button
-                        class="aula-btn ${aula.id === 'aula-1' ? 'active' : ''}"
+                        class="aula-btn"
                         data-materia="${subPasta}"
                         data-aula="${aula.id}"
                         ${aula.status === 'em-breve' ? 'disabled' : ''}
                         onclick="carregarAula('${subPasta}', '${aula.id}', this)"
                     >
-                        ${aula.nome}
+                        <span class="aula-nome">${aula.nome}</span>
                     </button>
                 `).join('')}
             </div>
@@ -1208,15 +1310,25 @@
 
         pastaAtiva = subPasta;
         slideIdx = 0;
-        document.getElementById('titulo-materia').innerText = titulo;
+        const tituloEl = document.getElementById('titulo-materia');
+        tituloEl.innerText = titulo;
+        tituloEl.classList.remove('titulo-institucional');
+        tituloEl.classList.add('titulo-materia');
         renderAulas(subPasta);
-        carregarAula(subPasta, 'aula-1', document.querySelector(`.aula-btn[data-materia="${subPasta}"][data-aula="aula-1"]`));
+        mostrarPlaceholderSlide();
+        document.getElementById('qtd-perguntas').innerText = 'Escolha uma aula';
+        document.getElementById('container-quiz').innerHTML = `
+            <div class="q-box" style="border-left-color: var(--roxo-glow);">
+                <div class="q-text" style="margin-bottom: 8px; color: #d8b4fe;">Aguardando seleção</div>
+                <p class="fb-desc">Selecione uma aula para que os slides e as perguntas apareçam aqui.</p>
+            </div>
+        `;
     }
 
     function carregarAula(subPasta, aulaId, btnEl) {
         const listaImagens = materias[subPasta].imagens;
         const viewer = document.getElementById('slide-viewer');
-        viewer.classList.add('active');
+        mostrarSlideSelecionado();
 
         if (btnEl) {
             document.querySelectorAll('.aula-btn').forEach(el => el.classList.remove('active'));
@@ -1566,12 +1678,20 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         renderAulas('DCO');
-        const botaoInicial = document.querySelector('.aula-btn[data-materia="DCO"][data-aula="aula-1"]');
-        if (botaoInicial) {
-            carregarMateria('DCO', 'Direito das Obrigações', document.querySelector('.nav-item.active') || document.querySelector('.nav-item'));
-            carregarAula('DCO', 'aula-1', botaoInicial);
-        }
+        mostrarPlaceholderSlide();
+        const tituloEl = document.getElementById('titulo-materia');
+        tituloEl.innerText = 'Anhanguera - 2º Período - Turma A (2026.2) / Noturno';
+        tituloEl.classList.add('titulo-institucional');
+        tituloEl.classList.remove('titulo-materia');
+        document.getElementById('qtd-perguntas').innerText = 'Escolha uma aula';
+        document.getElementById('container-quiz').innerHTML = `
+            <div class="q-box" style="border-left-color: var(--roxo-glow);">
+                <div class="q-text" style="margin-bottom: 8px; color: #d8b4fe;">Aguardando seleção</div>
+                <p class="fb-desc">Selecione uma disciplina e uma aula para que os slides e as perguntas apareçam aqui.</p>
+            </div>
+        `;
 
         registrarServiceWorker();
         inicializarPwa();
